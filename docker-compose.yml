@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  pao-na-gaveta:
+    build: .
+    container_name: pao-na-gaveta-app
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    volumes:
+      # Mount phrases.txt so you can update it without rebuilding
+      - ./public/phrases.txt:/usr/share/nginx/html/phrases.txt:ro
+    networks:
+      - app-network
+
+  # Optional: Add a development service for live development
+  pao-na-gaveta-dev:
+    build: 
+      context: .
+      target: build
+    container_name: pao-na-gaveta-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: yarn dev --host 0.0.0.0
+    profiles:
+      - dev
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

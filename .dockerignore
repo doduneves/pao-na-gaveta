@@ -1,0 +1,10 @@
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Development
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
