@@ -4,6 +4,22 @@ function App() {
   const [phrases, setPhrases] = useState([]);
   const [currentPhrase, setCurrentPhrase] = useState("");
 
+  const [showKonamiMessage, setShowKonamiMessage] = useState(false);
+  const [konamiSequence, setKonamiSequence] = useState([]);
+
+  const konamiCode = [
+    "ArrowUp",
+    "ArrowUp",
+    "ArrowDown",
+    "ArrowDown",
+    "ArrowLeft",
+    "ArrowRight",
+    "ArrowLeft",
+    "ArrowRight",
+    "KeyB",
+    "KeyA",
+  ];
+
   // Load phrases from external file
   useEffect(() => {
     const loadPhrases = async () => {
@@ -30,8 +46,90 @@ function App() {
     loadPhrases();
   }, []);
 
+  // Konami Code detection
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      setKonamiSequence((prev) => {
+        const newSequence = [...prev, event.code];
+
+        // Keep only the last 10 keys (length of Konami code)
+        if (newSequence.length > konamiCode.length) {
+          newSequence.shift();
+        }
+
+        // Check if the sequence matches Konami code
+        if (newSequence.length === konamiCode.length) {
+          const matches = konamiCode.every(
+            (key, index) => key === newSequence[index]
+          );
+          if (matches) {
+            setShowKonamiMessage(true);
+            return []; // Reset sequence
+          }
+        }
+
+        return newSequence;
+      });
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-950 via-red-900 to-black flex items-center justify-center p-6">
+      {/* Left Side Konami Modal */}
+      <div
+        className={`fixed left-0 top-0 h-full w-80 transform transition-transform duration-500 ease-in-out z-50 ${
+          showKonamiMessage ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="h-full bg-gradient-to-b from-yellow-500 via-orange-500 to-red-600 p-1">
+          <div className="h-full bg-black/90 backdrop-blur-sm p-6 flex flex-col justify-center">
+            {/* Close button */}
+            <button
+              onClick={() => setShowKonamiMessage(false)}
+              className="absolute top-4 right-4 text-yellow-400 hover:text-yellow-200 transition-colors text-2xl"
+            >
+              ×
+            </button>
+
+            {/* Content */}
+            <div className="text-center">
+              <div className="text-6xl mb-6">🍞✨</div>
+              <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 mb-4">
+                EASTER EGG!
+              </h2>
+              <div className="text-yellow-200 text-sm mb-6 max-h-120 overflow-y-auto bg-black/40 rounded-lg p-4 border border-yellow-500/30">
+                <div className="text-yellow-400 text-xs mb-3 font-semibold">
+                  TODAS AS FRASES DO PÃO:
+                </div>
+                {phrases.length > 0 ? (
+                  <div className="space-y-2">
+                    {phrases.map((phrase, index) => (
+                      <div
+                        key={index}
+                        className={`text-left p-2 rounded border-l-2 ${
+                          phrase === currentPhrase
+                            ? "border-yellow-400 bg-yellow-400/10 text-yellow-100"
+                            : "border-yellow-600/50 text-yellow-200"
+                        }`}
+                      >
+                        <span className="text-yellow-400 text-xs mr-2">
+                          #{index + 1}
+                        </span>
+                        {phrase}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-yellow-300">Carregando frases...</div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="max-w-4xl mx-auto text-center">
         {/* Header */}
         <div className="mb-12">
@@ -42,6 +140,7 @@ function App() {
             </div>
           </h1>
         </div>
+
         {/* Quote Container */}
         <div className="relative mb-12">
           <div className="absolute inset-0 bg-red-900/30 backdrop-blur-sm rounded-3xl transform rotate-1 border border-red-700/50"></div>
