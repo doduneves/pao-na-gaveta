@@ -134,9 +134,9 @@ function App() {
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-red-100 mb-4 tracking-tight drop-shadow-2xl">
-            <div className="text-4xl md:text-5xl font-light">Cuidado com o</div>
+            <div className="text-3xl md:text-4xl font-light">Descubra o seu</div>
             <div className="text-6xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-400 to-red-500">
-              Pão na Gaveta
+              Pão na Gaveta!
             </div>
           </h1>
         </div>
@@ -154,7 +154,7 @@ function App() {
         </div>
         {/* Footer */}
         <div className="mt-16 text-red-300 text-sm">
-          <p>Recarregue a página para descobrir um outro pão na gaveta</p>
+          <p>Recarregue a página para descobrir um novo pão na gaveta</p>
         </div>
       </div>
 
